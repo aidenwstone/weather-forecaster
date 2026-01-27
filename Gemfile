@@ -69,6 +69,9 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Shoulda Matchers for RSpec [https://github.com/thoughtbot/shoulda-matchers]
+  gem "shoulda-matchers", "~> 7.0"
 end
 
 gem "devise", "~> 5.0"
