@@ -6,6 +6,10 @@ RSpec.describe Location, type: :model do
   end
 
   describe 'validations' do
+    it { should validate_numericality_of(:latitude).is_in(-90..90).allow_nil }
+
+    it { should validate_numericality_of(:longitude).is_in(-180..180).allow_nil }
+
     describe '#has_address_or_ip' do
       context 'when :address is provided' do
         it 'is valid' do
