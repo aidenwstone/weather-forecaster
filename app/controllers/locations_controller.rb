@@ -12,4 +12,10 @@ class LocationsController < ApplicationController
 
   def destroy
   end
+
+  private
+
+  def allowed_location_params
+    params.expect(location: [ :address, :ip_address, :nickname ])
+  end
 end
