@@ -30,4 +30,20 @@ RSpec.describe "Locations", type: :request do
       expect(response.body).not_to include(user2_loc1.name)
     end
   end
+
+  describe "GET /locations/new" do
+    before do
+      get new_location_path
+    end
+
+    it "returns a successful response" do
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "renders a form for a new location" do
+      expect(response.body).to include("form")
+      expect(response.body).to include('name="location[address]"')
+      expect(response.body).to include('name="location[ip_address]"')
+    end
+  end
 end
