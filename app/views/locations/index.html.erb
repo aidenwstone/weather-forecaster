@@ -5,6 +5,12 @@
   <p>Oops! Looks like you don't have any locations yet...</p>
 <% end %>
 
+<% flash.each do |type, msg| %>
+  <div>
+    <%= msg %>
+  </div>
+<% end %>
+
 <% @locations.each do |location| %>
   <div>
     <p>Name: <%= location.name %></p>
