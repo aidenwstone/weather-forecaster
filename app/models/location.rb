@@ -8,7 +8,7 @@ class Location < ApplicationRecord
   validates :longitude, numericality: { in: (-180..180) }, allow_nil: true
 
   def has_address_or_ip
-    unless [ address, ip_address ].any?
+    if [ address, ip_address ].all?("")
       errors.add(:base, "Must include either 'address' or 'ip_address'")
     end
   end

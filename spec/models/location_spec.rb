@@ -27,7 +27,7 @@ RSpec.describe Location, type: :model do
 
       context 'when neither :address nor :ip_address is provided' do
         it 'is invalid and returns the correct error' do
-          location = build(:location, address: nil, ip_address: nil)
+          location = build(:location, address: '', ip_address: '')
           location.valid?
           expect(location.errors[:base]).to include("Must include either 'address' or 'ip_address'")
         end

@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :location do
     address { "404 Ghost St, Nowhereville USA" }
+    ip_address { "" }
     nickname { "Home" }
     latitude { 40.7128 }
     longitude { 74.0060 }
@@ -9,7 +10,7 @@ FactoryBot.define do
     user
 
     trait :with_ip do
-      address { nil }
+      address { "" }
       ip_address { "192.0.2.0" }
     end
   end
