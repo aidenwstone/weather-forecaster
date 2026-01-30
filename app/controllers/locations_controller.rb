@@ -10,6 +10,13 @@ class LocationsController < ApplicationController
   end
 
   def create
+    @location = current_user.locations.build(allowed_location_params)
+
+    if @location.save
+      redirect_to locations_path, notice: "Location successfully added!"
+    else
+      render :new, status: :unprocessable_content
+    end
   end
 
   def destroy

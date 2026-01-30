@@ -46,4 +46,49 @@ RSpec.describe "Locations", type: :request do
       expect(response.body).to include('name="location[ip_address]"')
     end
   end
+
+  describe "POST /locations" do
+    let(:params_valid) { { location: { address: "New York, NY", ip_address: "" } } }
+    let(:params_invalid) { { location: { address: "", ip_address: "" } } }
+
+    context "when valid parameters are submitted" do
+      it "increases the count of the user's locations" do
+        expect { post "/locations", params: params_valid }.to change(user1.locations, :count).by(1)
+      end
+
+      context "after the request" do
+        before do
+          post "/locations", params: params_valid
+        end
+
+        it "redirects to index page" do
+          expect(response).to redirect_to(locations_path)
+        end
+
+        it "sends a success flash message" do
+          expect(flash[:notice]).to eq("Location successfully added!")
+        end
+      end
+    end
+
+    context "when invalid parameters are submitted" do
+      it "does not increase the count of the user's locations" do
+        expect { post "/locations", params: params_invalid }.not_to change(user1.locations, :count)
+      end
+
+      context "after the request" do
+        before do
+          post "/locations", params: params_invalid
+        end
+
+        it "returns an unprocessable content response" do
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "shows the error message" do
+          expect(response.body).to include("1 error prohibited this location from being saved:")
+        end
+      end
+    end
+  end
 end
