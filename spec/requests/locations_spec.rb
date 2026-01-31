@@ -93,15 +93,15 @@ RSpec.describe "Locations", type: :request do
   end
 
   describe "DELETE /locations/:id" do
-    let!(:user_loc) { create(:location, user: user1) }
+    let!(:user1_loc) { create(:location, user: user1) }
 
     it "decreases the count of the user's locations" do
-      expect { delete location_path(user_loc) }.to change(user1.locations, :count).by(-1)
+      expect { delete location_path(user1_loc) }.to change(user1.locations, :count).by(-1)
     end
 
     context "after the request" do
       before do
-        delete location_path(user_loc)
+        delete location_path(user1_loc)
       end
 
       it "redirects to index page" do
@@ -110,6 +110,19 @@ RSpec.describe "Locations", type: :request do
 
       it "sends a success flash message" do
         expect(flash[:notice]).to eq("Location was successfully deleted!")
+      end
+    end
+
+    context "when attempting to delete another user's location" do
+      let!(:user2_loc) { create(:location, user: user2) }
+
+      it "returns a not found response" do
+        delete location_path(user2_loc)
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "does not delete the location" do
+        expect { delete location_path(user2_loc) }.not_to change(user2.locations, :count)
       end
     end
   end
