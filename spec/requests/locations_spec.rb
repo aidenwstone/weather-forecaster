@@ -50,23 +50,54 @@ RSpec.describe "Locations", type: :request do
   describe "POST /locations" do
     let(:params_valid) { { location: { address: "New York, NY", ip_address: "" } } }
     let(:params_invalid) { { location: { address: "", ip_address: "" } } }
+    let(:result_valid) { { latitude: 40.67480, longitude: -73.97139, name: 'New York', timezone: 'America/New_York' } }
 
     context "when valid parameters are submitted" do
-      it "increases the count of the user's locations" do
-        expect { post "/locations", params: params_valid }.to change(user1.locations, :count).by(1)
+      context "when LocationFinder returns a result hash" do
+        before do
+          allow(LocationFinder).to receive(:call).and_return(result_valid)
+        end
+
+        it "increases the count of the user's locations" do
+          expect { post "/locations", params: params_valid }.to change(user1.locations, :count).by(1)
+        end
+
+        context "after the request" do
+          before do
+            post "/locations", params: params_valid
+          end
+
+          it "redirects to index page" do
+            expect(response).to redirect_to(locations_path)
+          end
+
+          it "sends a success flash message" do
+            expect(flash[:notice]).to eq("Location successfully added!")
+          end
+        end
       end
 
-      context "after the request" do
+      context "when LocationFinder returns nil" do
         before do
-          post "/locations", params: params_valid
+          allow(LocationFinder).to receive(:call).and_return(nil)
         end
 
-        it "redirects to index page" do
-          expect(response).to redirect_to(locations_path)
+        it "does not increase the count of the user's locations" do
+          expect { post "/locations", params: params_valid }.not_to change(user1.locations, :count)
         end
 
-        it "sends a success flash message" do
-          expect(flash[:notice]).to eq("Location successfully added!")
+        context "after the request" do
+          before do
+            post "/locations", params: params_valid
+          end
+
+          it "returns an unprocessable content response" do
+            expect(response).to have_http_status(:unprocessable_content)
+          end
+
+          it "shows the error message" do
+            expect(response.body).to include("1 error prohibited this location from being saved:")
+          end
         end
       end
     end
@@ -74,6 +105,10 @@ RSpec.describe "Locations", type: :request do
     context "when invalid parameters are submitted" do
       it "does not increase the count of the user's locations" do
         expect { post "/locations", params: params_invalid }.not_to change(user1.locations, :count)
+      end
+
+      it "does not call LocationFinder" do
+        expect(LocationFinder).not_to receive(:call)
       end
 
       context "after the request" do

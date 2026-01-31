@@ -12,9 +12,19 @@ class LocationsController < ApplicationController
   def create
     @location = current_user.locations.build(allowed_location_params)
 
-    if @location.save
+    unless @location.valid?
+      render :new, status: :unprocessable_content
+      return
+    end
+
+    location_data = LocationFinder.call(@location.address, @location.ip_address)
+
+    if location_data
+      @location.assign_attributes(location_data)
+      @location.save
       redirect_to locations_path, notice: "Location successfully added!"
     else
+      @location.errors.add(:base, "That location couldn't be found. Maybe try again later.")
       render :new, status: :unprocessable_content
     end
   end
