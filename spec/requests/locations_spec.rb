@@ -91,4 +91,26 @@ RSpec.describe "Locations", type: :request do
       end
     end
   end
+
+  describe "DELETE /locations/:id" do
+    let!(:user_loc) { create(:location, user: user1) }
+
+    it "decreases the count of the user's locations" do
+      expect { delete location_path(user_loc) }.to change(user1.locations, :count).by(-1)
+    end
+
+    context "after the request" do
+      before do
+        delete location_path(user_loc)
+      end
+
+      it "redirects to index page" do
+        expect(response).to redirect_to(locations_path)
+      end
+
+      it "sends a success flash message" do
+        expect(flash[:notice]).to eq("Location was successfully deleted!")
+      end
+    end
+  end
 end
