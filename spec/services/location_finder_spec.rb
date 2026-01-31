@@ -17,7 +17,7 @@ RSpec.describe LocationFinder do
       it 'calls the geocoding API and returns the correct data' do
         expect(Net::HTTP).to receive(:get).and_return(json_response_geocode_valid)
         result = LocationFinder.call('New York, NY', '')
-        expect(result).to eq({ latitude: 40.67480, longitude: -73.97139, city: 'New York', timezone: 'America/New_York' })
+        expect(result).to eq({ latitude: 40.67480, longitude: -73.97139, name: 'New York', timezone: 'America/New_York' })
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe LocationFinder do
       it 'calls the IP location API and returns the correct data' do
         expect(Net::HTTP).to receive(:get).and_return(json_response_ipapi_valid)
         result = LocationFinder.call('', '192.0.2.0')
-        expect(result).to eq({ latitude: 37.386, longitude: -122.0838, city: 'Mountain View', timezone: 'America/Los_Angeles' })
+        expect(result).to eq({ latitude: 37.386, longitude: -122.0838, name: 'Mountain View', timezone: 'America/Los_Angeles' })
       end
     end
 
