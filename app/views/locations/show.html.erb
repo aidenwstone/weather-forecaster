@@ -1,0 +1,11 @@
+<h1>
+  <%= @location.nickname.strip.empty? ? @location.name : @location.nickname %> | 
+  <%= @location.address.strip.empty? ? @location.ip_address : @location.address %>
+</h1>
+
+<% @weather.each do |day| %>
+    <div>
+      <h3><strong><%= day[:weekday] %></strong></h3>
+      <p>High: <strong><%= day[:high_temp] %>&#8457;</strong> | Low: <strong><%= day[:low_temp] %>&#8457;</strong></p>
+    </div>
+<% end %>

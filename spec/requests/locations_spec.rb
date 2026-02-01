@@ -8,6 +8,40 @@ RSpec.describe "Locations", type: :request do
     sign_in user1
   end
 
+  describe "GET /locations/:id" do
+    let!(:user1_loc) { create(:location, user: user1) }
+    let(:weather_fetcher_result) {
+        [
+          { weekday: 'Saturday', high_temp: 20.7, low_temp: 6.7 },
+          { weekday: 'Sunday', high_temp: 22.1, low_temp: 7.1 },
+          { weekday: 'Monday', high_temp: 29.9, low_temp: 5 },
+          { weekday: 'Tuesday', high_temp: 31.3, low_temp: 6.8 },
+          { weekday: 'Wednesday', high_temp: 30.2, low_temp: 14 },
+          { weekday: 'Thursday', high_temp: 28.7, low_temp: 12.5 },
+          { weekday: 'Friday', high_temp: 32.1, low_temp: 9.9 }
+        ]
+      }
+
+    before do
+      allow(WeatherFetcher).to receive(:call).and_return(weather_fetcher_result)
+    end
+
+    it "calls WeatherFetcher with the correct coordinates" do
+      expect(WeatherFetcher).to receive(:call).with(user1_loc.latitude, user1_loc.longitude, user1_loc.timezone)
+      get location_path(user1_loc)
+    end
+
+    it "renders the 7-day forecast" do
+      get location_path(user1_loc)
+
+      weather_fetcher_result.each do |day|
+        expect(response.body).to include(day[:weekday])
+        expect(response.body).to include(day[:high_temp].to_s)
+        expect(response.body).to include(day[:low_temp].to_s)
+      end
+    end
+  end
+
   describe "GET /locations" do
     let!(:user1_loc1) { create(:location, name: "Test Location 1", user: user1) }
     let!(:user1_loc2) { create(:location, name: "Test Location 2", user: user1) }

@@ -1,6 +1,11 @@
 class LocationsController < ApplicationController
   before_action :authenticate_user!
 
+  def show
+    @location = current_user.locations.find(params[:id])
+    @weather = WeatherFetcher.call(@location.latitude, @location.longitude, @location.timezone)
+  end
+
   def index
     @locations = current_user.locations
   end
