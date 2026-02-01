@@ -14,5 +14,5 @@ Rails.application.routes.draw do
 
   devise_for :users
 
-  resources :locations, except: [ :show, :edit, :update ]
+  resources :locations, except: [ :edit, :update ]
 end
