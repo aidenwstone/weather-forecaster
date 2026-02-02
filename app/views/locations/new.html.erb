@@ -1,5 +1,7 @@
 <h1>Add a new Location</h1>
 
+<%= button_to "Cancel", locations_path, method: :get %>
+
 <p>Enter an address or an IP address, along with an optional nickname, and then watch the magic happen!</p>
 
 <% if @location.errors.any? %>

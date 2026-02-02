@@ -1,7 +1,11 @@
+<%= link_to "Back", locations_path %>
+
 <h1>
   <%= @location.nickname.strip.empty? ? @location.name : @location.nickname %> | 
   <%= @location.address.strip.empty? ? @location.ip_address : @location.address %>
 </h1>
+
+<%= button_to "Remove location", @location, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
 
 <% @weather.each do |day| %>
     <div>

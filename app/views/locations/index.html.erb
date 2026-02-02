@@ -1,18 +1,22 @@
 <h1>Weather Forecaster</h1>
 
 <h2>Your locations</h2>
+<% flash.each do |type, msg| %>
+  <div>
+    <p><%= msg %></p>
+  </div>
+<% end %>
+
 <% if @locations.empty? %>
   <p>Oops! Looks like you don't have any locations yet...</p>
 <% end %>
 
-<% flash.each do |type, msg| %>
-  <div>
-    <%= msg %>
-  </div>
-<% end %>
+<%= button_to "Add a location", new_location_path, method: :get %>
 
 <% @locations.each do |location| %>
   <div>
-    <p>Name: <%= location.name %></p>
+    <% loc_name = location.nickname.strip.empty? ? location.name : location.nickname %>
+
+    <p><%= link_to loc_name, location %></p>
   </div>
 <% end %>
