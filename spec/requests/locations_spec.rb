@@ -43,9 +43,9 @@ RSpec.describe "Locations", type: :request do
   end
 
   describe "GET /locations" do
-    let!(:user1_loc1) { create(:location, name: "Test Location 1", user: user1) }
-    let!(:user1_loc2) { create(:location, name: "Test Location 2", user: user1) }
-    let!(:user2_loc1) { create(:location, name: "Test Location 3", user: user2) }
+    let!(:user1_loc1) { create(:location, nickname: "Test Location 1", user: user1) }
+    let!(:user1_loc2) { create(:location, nickname: "Test Location 2", user: user1) }
+    let!(:user2_loc1) { create(:location, nickname: "Test Location 3", user: user2) }
 
     before do
       get locations_path
@@ -56,12 +56,12 @@ RSpec.describe "Locations", type: :request do
     end
 
     it "returns the current user's locations" do
-      expect(response.body).to include(user1_loc1.name)
-      expect(response.body).to include(user1_loc2.name)
+      expect(response.body).to include(user1_loc1.nickname)
+      expect(response.body).to include(user1_loc2.nickname)
     end
 
     it "does not return anyone else's locations" do
-      expect(response.body).not_to include(user2_loc1.name)
+      expect(response.body).not_to include(user2_loc1.nickname)
     end
   end
 
