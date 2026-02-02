@@ -38,6 +38,14 @@ RSpec.describe LocationFinder do
       end
     end
 
+    context 'when the geocoding API is unreachable' do
+      it 'calls the geocoding API and returns :unreachable' do
+        expect(Net::HTTP).to receive(:get)
+        result = LocationFinder.call('New York, NY', '')
+        expect(result).to eq(:unreachable)
+      end
+    end
+
     context 'when a valid IP address is provided' do
       let(:json_response_ipapi_valid) {
         JSON.dump({
@@ -67,6 +75,14 @@ RSpec.describe LocationFinder do
         expect(Net::HTTP).to receive(:get).and_return(json_response_ipapi_invalid)
         result = LocationFinder.call('', '192.0.2')
         expect(result).to be_nil
+      end
+    end
+
+    context 'when the IP location API is unreachable' do
+      it 'calls the IP location API and returns :unreachable' do
+        expect(Net::HTTP).to receive(:get)
+        result = LocationFinder.call('', '192.0.2.0')
+        expect(result).to eq(:unreachable)
       end
     end
   end

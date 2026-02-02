@@ -24,7 +24,10 @@ class LocationsController < ApplicationController
 
     location_data = LocationFinder.call(@location.address, @location.ip_address)
 
-    if location_data
+    if location_data == :unreachable
+      flash.now[:alert] = "Uh oh, looks like the server is not responding. Please try again later."
+      render :new, status: :service_unavailable
+    elsif location_data
       @location.assign_attributes(location_data)
       @location.save
       redirect_to locations_path, notice: "Location successfully added!"

@@ -1,5 +1,11 @@
 <h1>Add a new Location</h1>
 
+<% flash.each do |type, msg| %>
+  <div>
+    <p><strong><%= msg %></strong></p>
+  </div>
+<% end %>
+
 <%= button_to "Cancel", locations_path, method: :get %>
 
 <p>Enter an address or an IP address, along with an optional nickname, and then watch the magic happen!</p>

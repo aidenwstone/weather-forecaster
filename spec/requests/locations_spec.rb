@@ -134,6 +134,30 @@ RSpec.describe "Locations", type: :request do
           end
         end
       end
+
+      context "when LocationFinder returns :unreachable" do
+        before do
+          allow(LocationFinder).to receive(:call).and_return(:unreachable)
+        end
+
+        it "does not increase the count of the user's locations" do
+          expect { post "/locations", params: params_valid }.not_to change(user1.locations, :count)
+        end
+
+        context "after the request" do
+          before do
+            post "/locations", params: params_valid
+          end
+
+          it "returns a service unavailable response" do
+            expect(response).to have_http_status(:service_unavailable)
+          end
+
+          it "sends a 'server not responding' flash message" do
+            expect(flash[:alert]).to eq("Uh oh, looks like the server is not responding. Please try again later.")
+          end
+        end
+      end
     end
 
     context "when invalid parameters are submitted" do

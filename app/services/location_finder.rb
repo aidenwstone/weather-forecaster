@@ -18,5 +18,7 @@ class LocationFinder
         { latitude: loc["latitude"], longitude: loc["longitude"], name: loc["city"], timezone: loc["timezone"] }
       end
     end
+  rescue
+    :unreachable
   end
 end
