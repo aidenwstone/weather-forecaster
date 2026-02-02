@@ -47,7 +47,7 @@ RSpec.describe WeatherFetcher do
           })
         }
 
-        it 'calls the Weather API and returns an error' do
+        it 'calls the Weather API and returns nil' do
           expect(Net::HTTP).to receive(:get).and_return(json_response_invalid)
           result = WeatherFetcher.call(100.0, -73.97139, 'America/New_York')
           expect(result).to be_nil
