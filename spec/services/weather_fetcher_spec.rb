@@ -40,18 +40,32 @@ RSpec.describe WeatherFetcher do
     end
 
     context 'when invalid coordinates are provided' do
-        let(:json_response_invalid) {
-          JSON.dump({
-            "error": true,
-            "reason": "Latitude must be in range of -90 to 90°. Given: 100.0."
-          })
-        }
+      let(:json_response_invalid) {
+        JSON.dump({
+          "error": true,
+          "reason": "Latitude must be in range of -90 to 90°. Given: 100.0."
+        })
+      }
 
-        it 'calls the Weather API and returns nil' do
-          expect(Net::HTTP).to receive(:get).and_return(json_response_invalid)
-          result = WeatherFetcher.call(100.0, -73.97139, 'America/New_York')
-          expect(result).to be_nil
-        end
+      it 'calls the Weather API and returns nil' do
+        expect(Net::HTTP).to receive(:get).and_return(json_response_invalid)
+        result = WeatherFetcher.call(100.0, -73.97139, 'America/New_York')
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when the API is not reachable' do
+      let(:json_response_error) {
+        JSON.dump({
+          "error": true
+        })
+      }
+
+      it 'calls the weather API and returns :unreachable' do
+        expect(Net::HTTP).to receive(:get)
+        result = WeatherFetcher.call(40.67480, -73.97139, 'America/New_York')
+        expect(result).to eq(:unreachable)
+      end
     end
   end
 end

@@ -16,5 +16,7 @@ class WeatherFetcher
         { weekday: day, high_temp: high, low_temp: low }
       end
     end
+  rescue
+    :unreachable
   end
 end

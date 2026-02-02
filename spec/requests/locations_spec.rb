@@ -11,16 +11,16 @@ RSpec.describe "Locations", type: :request do
   describe "GET /locations/:id" do
     let!(:user1_loc) { create(:location, user: user1) }
     let(:weather_fetcher_result) {
-        [
-          { weekday: 'Saturday', high_temp: 20.7, low_temp: 6.7 },
-          { weekday: 'Sunday', high_temp: 22.1, low_temp: 7.1 },
-          { weekday: 'Monday', high_temp: 29.9, low_temp: 5 },
-          { weekday: 'Tuesday', high_temp: 31.3, low_temp: 6.8 },
-          { weekday: 'Wednesday', high_temp: 30.2, low_temp: 14 },
-          { weekday: 'Thursday', high_temp: 28.7, low_temp: 12.5 },
-          { weekday: 'Friday', high_temp: 32.1, low_temp: 9.9 }
-        ]
-      }
+      [
+        { weekday: 'Saturday', high_temp: 20.7, low_temp: 6.7 },
+        { weekday: 'Sunday', high_temp: 22.1, low_temp: 7.1 },
+        { weekday: 'Monday', high_temp: 29.9, low_temp: 5 },
+        { weekday: 'Tuesday', high_temp: 31.3, low_temp: 6.8 },
+        { weekday: 'Wednesday', high_temp: 30.2, low_temp: 14 },
+        { weekday: 'Thursday', high_temp: 28.7, low_temp: 12.5 },
+        { weekday: 'Friday', high_temp: 32.1, low_temp: 9.9 }
+      ]
+    }
 
     before do
       allow(WeatherFetcher).to receive(:call).and_return(weather_fetcher_result)
@@ -31,13 +31,27 @@ RSpec.describe "Locations", type: :request do
       get location_path(user1_loc)
     end
 
-    it "renders the 7-day forecast" do
-      get location_path(user1_loc)
+    context "when WeatherFetcher returns a result array" do
+      it "renders the 7-day forecast" do
+        get location_path(user1_loc)
 
-      weather_fetcher_result.each do |day|
-        expect(response.body).to include(day[:weekday])
-        expect(response.body).to include(day[:high_temp].to_s)
-        expect(response.body).to include(day[:low_temp].to_s)
+        weather_fetcher_result.each do |day|
+          expect(response.body).to include(day[:weekday])
+          expect(response.body).to include(day[:high_temp].to_s)
+          expect(response.body).to include(day[:low_temp].to_s)
+        end
+      end
+    end
+
+    context "when WeatherFetcher returns :unreachable" do
+      before do
+        allow(WeatherFetcher).to receive(:call).and_return(:unreachable)
+      end
+
+      it "renders a 'server not responding' message" do
+        get location_path(user1_loc)
+
+        expect(response.body).to include("Hmmm... We couldn't get the weather data right now. Maybe try again later.")
       end
     end
   end

@@ -7,9 +7,13 @@
 
 <%= button_to "Remove location", @location, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
 
-<% @weather.each do |day| %>
-    <div>
-      <h3><strong><%= day[:weekday] %></strong></h3>
-      <p>High: <strong><%= day[:high_temp] %>&#8457;</strong> | Low: <strong><%= day[:low_temp] %>&#8457;</strong></p>
-    </div>
+<% if @weather == :unreachable %>
+  <p>Hmmm... We couldn't get the weather data right now. Maybe try again later.</p>
+<% else %>
+  <% @weather.each do |day| %>
+      <div>
+        <h3><strong><%= day[:weekday] %></strong></h3>
+        <p>High: <strong><%= day[:high_temp] %>&#8457;</strong> | Low: <strong><%= day[:low_temp] %>&#8457;</strong></p>
+      </div>
+  <% end %>
 <% end %>
