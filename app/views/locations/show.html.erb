@@ -16,4 +16,29 @@
         <p>High: <strong><%= day[:high_temp] %>&#8457;</strong> | Low: <strong><%= day[:low_temp] %>&#8457;</strong></p>
       </div>
   <% end %>
+
+  <% chart_json = {
+    type: "line",
+    data: {
+      labels: @weather.collect{ |day| day[:weekday] },
+      datasets: [
+        {
+          backgroundColor: "rgba(204, 0, 0, 0.5)",
+          borderColor: "rgb(255, 128, 128)",
+          data: @weather.collect{ |day| day[:high_temp] },
+          label: "High Temps",
+          fill: "none"
+        },
+        {
+          backgroundColor: "rgba(0, 136, 204, 0.5)",
+          borderColor: "rgb(128, 212, 255)",
+          data: @weather.collect{ |day| day[:low_temp] },
+          label: "Low Temps",
+          fill: "none"
+        }
+      ]
+    }
+  } %>
+
+  <%= image_tag("https://image-charts.com/chart.js/2.8.0?bkg=white&c=#{chart_json}") %>
 <% end %>

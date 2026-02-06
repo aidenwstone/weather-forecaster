@@ -10,6 +10,7 @@ This app allows you to add locations by inputting either a text or IP address, a
 - [ipapi.co](https://ipapi.co/) for fetching location data based on IP addresses
 - [Geocode.xyz](https://geocode.xyz/) for fetching location data based on text addresses
 - [Open-Meteo.com](https://open-meteo.com/) for fetching weather data
+- [Image-Charts.com](https://www.image-charts.com/) for rendering temperature charts
 
 ## Prerequisites
 The Setup steps expect you to have the following installed:
